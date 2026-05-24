@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free Online HTML Coder</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f172a;
+        --panel: #111827;
+        --surface: #1f2937;
+        --text: #f9fafb;
+        --muted: #9ca3af;
+        --accent: #22c55e;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(circle at top, #1d4ed8 0%, var(--bg) 35%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .app {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+
+      h1 { margin: 0 0 0.5rem; }
+
+      p { color: var(--muted); margin: 0 0 1rem; }
+
+      .toolbar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 1px solid #374151;
+        background: var(--surface);
+        color: var(--text);
+        padding: 0.55rem 0.85rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+      }
+
+      button.primary {
+        background: var(--accent);
+        color: #052e16;
+        border: none;
+        font-weight: 700;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 65vh;
+        resize: vertical;
+        border: 1px solid #374151;
+        border-radius: 0.5rem;
+        padding: 0.8rem;
+        font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        background: var(--panel);
+        color: var(--text);
+      }
+
+      iframe {
+        width: 100%;
+        min-height: 65vh;
+        border: 1px solid #374151;
+        border-radius: 0.5rem;
+        background: white;
+      }
+
+      @media (max-width: 900px) {
+        .layout { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <h1>Free Online HTML Coder</h1>
+      <p>Write HTML in the left panel and preview it live on the right.</p>
+
+      <div class="toolbar">
+        <button class="primary" id="runBtn">Run</button>
+        <button id="clearBtn">Clear</button>
+        <button id="resetBtn">Reset Starter</button>
+        <button id="downloadBtn">Download .html</button>
+      </div>
+
+      <section class="layout">
+        <textarea id="editor" spellcheck="false"></textarea>
+        <iframe id="preview" title="Live HTML preview"></iframe>
+      </section>
+    </main>
+
+    <script>
+      const starter = `<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 2rem; }
+      h1 { color: #2563eb; }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome 👋</h1>
+    <p>You are coding in your free online HTML editor.</p>
+  </body>
+</html>`;
+
+      const editor = document.getElementById('editor');
+      const preview = document.getElementById('preview');
+
+      function render() {
+        const html = editor.value;
+        preview.srcdoc = html;
+        localStorage.setItem('free-html-coder-content', html);
+      }
+
+      function loadInitial() {
+        editor.value = localStorage.getItem('free-html-coder-content') || starter;
+        render();
+      }
+
+      document.getElementById('runBtn').addEventListener('click', render);
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        editor.value = '';
+        render();
+      });
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        editor.value = starter;
+        render();
+      });
+
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        const blob = new Blob([editor.value], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'my-page.html';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      editor.addEventListener('input', render);
+      loadInitial();
+    </script>
+  </body>
+</html>
